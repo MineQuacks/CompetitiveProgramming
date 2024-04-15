@@ -5,15 +5,17 @@ vector<bool>visited;
 ifstream fin ("input.txt");
 ofstream fout ("output.txt");
 int island;
-bool loop;
-int first;
+map<int,int>visitList;
+int loopSize;
 void dfs(int x)
 {
     if(visited[x]){
-        if(x==first)loop = true;
+        if(visitList[x]==0)loopSize=0;
+        else loopSize = island - visitList[x];
         return;
     }
     visited[x]=true;
+    visitList[x]=island;
     island++;
     dfs(nexts[x]);
 }
@@ -27,12 +29,12 @@ int main()
     int maxisland = 0;
     for(int i=0;i<n;i++)
     {
-        loop =false;
-        first=i;
-        for(int j=0;j<n;j++)visited[j]=false;
-        island=0;
-        dfs(i);
-        if(loop)maxisland=max(island,maxisland);  
+        if(visited[i])continue;
+        visitList.clear();
+        island=1;
+        loopSize = 0;
+        if(!visited[i])dfs(i);
+        maxisland=max(loopSize,maxisland);  
     }
     fout<<maxisland;
 }
